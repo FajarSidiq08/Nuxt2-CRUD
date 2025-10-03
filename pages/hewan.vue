@@ -2,9 +2,9 @@
   <div class="hewan-page">
     <h1>Daftar Hewan</h1>
 
-    <FormHewan :api="hewanApi" @tambah="tambahHewan" />
+    <HewanFormHewan :api="hewanApi" @tambah="tambahHewan" />
 
-    <UpdateHewan
+    <HewanUpdateHewan
       :api="hewanApi"
       :hewan="hewanDipilih"
       :visible="showUpdate"
@@ -12,7 +12,7 @@
       @batal="showUpdate = false"
     />
 
-    <ListHewan
+    <HewanListHewan
       :api="hewanApi"
       :hewanList="hewanList"
       @edit="editHewan"
@@ -22,13 +22,9 @@
 </template>
 
 <script>
-import FormHewan from "./hewan/FormHewan.vue";
-import ListHewan from "./hewan/ListHewan.vue";
-import UpdateHewan from "./hewan/UpdateHewan.vue";
 import hewanService from "@/services/hewan";
 
 export default {
-  components: { FormHewan, ListHewan, UpdateHewan },
   data() {
     return {
       hewanList: [],

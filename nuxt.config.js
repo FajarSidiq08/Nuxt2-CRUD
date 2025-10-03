@@ -27,9 +27,12 @@ export default {
   // Plugin sebelum mounting
   plugins: [],
 
+  // Aktifkan auto-import komponen
+  components: true,
+
   // Build modules (dev)
   buildModules: [
-    //     '@nuxtjs/tailwindcss'
+    // '@nuxtjs/tailwindcss'
   ],
 
   // Modules Nuxt
