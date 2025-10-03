@@ -3,10 +3,6 @@
     <h3>Update Hewan</h3>
     <form @submit.prevent="updateHewan" class="form-update">
       <input v-model="nama" placeholder="Nama Hewan" />
-      <select v-model="kelompok">
-        <option disabled value="">Pilih Kelompok</option>
-        <option v-for="k in kelompokOptions" :key="k">{{ k }}</option>
-      </select>
       <div class="button-group">
         <button type="submit" class="update-btn">Update</button>
         <button type="button" @click="$emit('batal')" class="cancel-btn">
@@ -23,30 +19,15 @@ export default {
     hewan: Object,
     visible: Boolean,
     api: { type: Function, required: true },
-    kelompokOptions: {
-      type: Array,
-      default: () => [
-        "Mamalia",
-        "Burung",
-        "Reptil",
-        "Amfibi",
-        "Ikan",
-        "Serangga",
-        "Arachnida",
-        "Crustacea",
-      ],
-    },
   },
   data() {
     return {
       nama: this.hewan?.nama || "",
-      kelompok: this.hewan?.kelompok || "",
     };
   },
   watch: {
     hewan(newVal) {
       this.nama = newVal?.nama || "";
-      this.kelompok = newVal?.kelompok || "";
     },
   },
   methods: {
@@ -54,7 +35,6 @@ export default {
       try {
         const updated = await this.api.update(this.hewan.id, {
           nama: this.nama,
-          kelompok: this.kelompok,
         });
         this.$emit("update", updated);
       } catch (err) {

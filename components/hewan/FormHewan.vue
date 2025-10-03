@@ -1,10 +1,6 @@
 <template>
   <form @submit.prevent="tambahHewan" class="form-hewan">
     <input v-model="nama" placeholder="Nama Hewan" />
-    <select v-model="kelompok">
-      <option disabled value="">Pilih Kelompok</option>
-      <option v-for="k in kelompokOptions" :key="k">{{ k }}</option>
-    </select>
     <button type="submit">Tambah</button>
   </form>
 </template>
@@ -12,36 +8,20 @@
 <script>
 export default {
   props: {
-    kelompokOptions: {
-      type: Array,
-      default: () => [
-        "Mamalia",
-        "Burung",
-        "Reptil",
-        "Amfibi",
-        "Ikan",
-        "Serangga",
-        "Arachnida",
-        "Crustacea",
-      ],
-    },
     api: { type: Function, required: true }, // inject service hewan
   },
   data() {
-    return { nama: "", kelompok: "" };
+    return { nama: "" };
   },
   methods: {
     async tambahHewan() {
-      if (!this.nama || !this.kelompok)
-        return alert("Nama & kelompok wajib diisi!");
+      if (!this.nama) return alert("Nama wajib diisi!");
       try {
         const created = await this.api.create({
           nama: this.nama,
-          kelompok: this.kelompok,
         });
         this.$emit("tambah", created);
         this.nama = "";
-        this.kelompok = "";
       } catch (err) {
         console.error(err);
       }

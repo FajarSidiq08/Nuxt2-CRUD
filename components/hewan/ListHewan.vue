@@ -1,7 +1,7 @@
 <template>
   <ul class="list-hewan">
     <li v-for="hewan in hewanList" :key="hewan.id" class="list-item">
-      <span class="hewan-info">{{ hewan.nama }} - {{ hewan.kelompok }}</span>
+      <span class="hewan-info">{{ hewan.nama }}</span>
       <div class="button-group">
         <button class="edit-btn" @click="$emit('edit', hewan)">Edit</button>
         <button class="hapus-btn" @click="hapusHewan(hewan)">Hapus</button>
