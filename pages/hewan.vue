@@ -1,153 +1,88 @@
 <template>
-  <div>
+  <div class="hewan-page">
     <h1>Daftar Hewan</h1>
 
-    <!-- Form tambah hewan -->
-    <form @submit.prevent="tambahHewan" class="flex flex-col gap-2 mb-4">
-      <input
-        v-model="newHewan.nama"
-        placeholder="Nama"
-        class="border p-2 rounded"
-      />
-      <select v-model="newHewan.kelompok" class="border p-2 rounded">
-        <option disabled value="">Pilih Kelompok</option>
-        <option v-for="k in kelompokOptions" :key="k" :value="k">
-          {{ k }}
-        </option>
-      </select>
-      <button
-        type="submit"
-        class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
-      >
-        Tambah
-      </button>
-    </form>
+    <FormHewan :api="hewanApi" @tambah="tambahHewan" />
 
-    <!-- List hewan -->
-    <ul>
-      <li v-for="h in hewans" :key="h.id" class="mb-2">
-        {{ h.nama }} - {{ h.kelompok }}
-        <button @click="startEdit(h)" class="ml-2 text-yellow-600">Edit</button>
-        <button @click="hapusHewan(h.id)" class="ml-2 text-red-600">
-          Hapus
-        </button>
-      </li>
-    </ul>
+    <UpdateHewan
+      :api="hewanApi"
+      :hewan="hewanDipilih"
+      :visible="showUpdate"
+      @update="updateHewan"
+      @batal="showUpdate = false"
+    />
 
-    <!-- Form Edit -->
-    <div v-if="editingHewan" class="mt-4 border p-4 rounded bg-gray-50">
-      <h2 class="font-bold mb-2">Edit Hewan</h2>
-      <input
-        v-model="editingHewan.nama"
-        placeholder="Nama"
-        class="border p-2 rounded mb-2 w-full"
-      />
-      <select
-        v-model="editingHewan.kelompok"
-        class="border p-2 rounded mb-2 w-full"
-      >
-        <option disabled value="">Pilih Kelompok</option>
-        <option v-for="k in kelompokOptions" :key="k" :value="k">
-          {{ k }}
-        </option>
-      </select>
-      <div class="flex gap-2">
-        <button
-          @click="updateHewan"
-          class="bg-green-500 text-white p-2 rounded hover:bg-green-600"
-        >
-          Simpan
-        </button>
-        <button
-          @click="cancelEdit"
-          class="bg-gray-400 text-white p-2 rounded hover:bg-gray-500"
-        >
-          Batal
-        </button>
-      </div>
-    </div>
+    <ListHewan
+      :api="hewanApi"
+      :hewanList="hewanList"
+      @edit="editHewan"
+      @hapus="hapusHewan"
+    />
   </div>
 </template>
 
 <script>
-import HewanService from "~/services/hewan";
+import FormHewan from "./hewan/FormHewan.vue";
+import ListHewan from "./hewan/ListHewan.vue";
+import UpdateHewan from "./hewan/UpdateHewan.vue";
+import hewanService from "@/services/hewan";
 
 export default {
-  data: () => ({
-    hewans: [],
-    newHewan: { nama: "", kelompok: "" },
-    editingHewan: null, // Menampung hewan yang sedang diedit
-    kelompokOptions: [
-      "Mamalia",
-      "Burung",
-      "Reptil",
-      "Amfibi",
-      "Ikan",
-      "Serangga",
-      "Arachnida",
-      "Crustacea",
-    ],
-  }),
-
-  async mounted() {
+  components: { FormHewan, ListHewan, UpdateHewan },
+  data() {
+    return {
+      hewanList: [],
+      hewanDipilih: null,
+      showUpdate: false,
+      hewanApi: null,
+    };
+  },
+  async created() {
+    this.hewanApi = hewanService(this.$axios);
     await this.loadHewan();
   },
-
   methods: {
-    loadHewan: async function () {
-      this.hewans = await HewanService(this.$axios).getAll();
-    },
-
-    tambahHewan: async function () {
-      if (!this.newHewan.kelompok) return alert("Pilih kelompok hewan!");
+    async loadHewan() {
       try {
-        const created = await HewanService(this.$axios).create(this.newHewan);
-        this.hewans.push(created);
-        this.newHewan = { nama: "", kelompok: "" };
-        alert("Hewan berhasil ditambah!");
-      } catch (error) {
-        console.error(error);
-        alert(
-          "Gagal menambah hewan: " +
-            (error.response?.data?.message || error.message)
-        );
+        this.hewanList = await this.hewanApi.getAll();
+      } catch (err) {
+        console.error(err);
       }
     },
-
-    startEdit: function (h) {
-      // Buat salinan agar v-model tidak langsung mengubah list
-      this.editingHewan = { ...h };
+    tambahHewan(hewan) {
+      this.hewanList.push(hewan);
     },
-
-    cancelEdit: function () {
-      this.editingHewan = null;
+    editHewan(hewan) {
+      this.hewanDipilih = hewan;
+      this.showUpdate = true;
     },
-
-    updateHewan: async function () {
-      if (!this.editingHewan.kelompok) return alert("Pilih kelompok hewan!");
-      try {
-        await HewanService(this.$axios).update(
-          this.editingHewan.id,
-          this.editingHewan
-        );
-        this.loadHewan();
-        this.editingHewan = null;
-        alert("Hewan berhasil diupdate!");
-      } catch (error) {
-        console.error(error);
-        alert(
-          "Gagal update hewan: " +
-            (error.response?.data?.message || error.message)
-        );
-      }
+    updateHewan(updated) {
+      const index = this.hewanList.findIndex((h) => h.id === updated.id);
+      if (index !== -1) this.hewanList.splice(index, 1, updated);
+      this.showUpdate = false;
     },
-
-    hapusHewan: async function (id) {
-      if (confirm("Yakin hapus?")) {
-        await HewanService(this.$axios).delete(id);
-        this.loadHewan();
-      }
+    hapusHewan(hewan) {
+      this.hewanList = this.hewanList.filter((h) => h.id !== hewan.id);
     },
   },
 };
 </script>
+
+<style>
+.hewan-page {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #fdfdfd;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+.hewan-page h1 {
+  font-size: 28px;
+  margin-bottom: 25px;
+  text-align: center;
+  color: #333;
+}
+</style>
