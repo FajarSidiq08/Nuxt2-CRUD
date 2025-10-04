@@ -1,8 +1,8 @@
 <template>
-  <div v-if="visible" class="update-hewan-card">
-    <h3>Update Hewan</h3>
-    <form @submit.prevent="updateHewan" class="form-update">
-      <input v-model="nama" placeholder="Nama Hewan" />
+  <div v-if="visible" class="update-animal-card">
+    <h3>Update Animal</h3>
+    <form @submit.prevent="updateAnimal" class="form-update">
+      <input v-model="name" placeholder="Nama Animal" />
       <div class="button-group">
         <button type="submit" class="update-btn">Update</button>
         <button type="button" @click="$emit('batal')" class="cancel-btn">
@@ -16,29 +16,30 @@
 <script>
 export default {
   props: {
-    hewan: Object,
+    animal: Object,
     visible: Boolean,
-    api: { type: Function, required: true },
+    api: { type: Object, required: true },
   },
   data() {
     return {
-      nama: this.hewan?.nama || "",
+      name: this.animal?.name || "",
     };
   },
   watch: {
-    hewan(newVal) {
-      this.nama = newVal?.nama || "";
+    animal(newVal) {
+      this.name = newVal?.name || "";
     },
   },
   methods: {
-    async updateHewan() {
+    async updateAnimal() {
+      if (!this.name) return alert("Nama wajib diisi!");
       try {
-        const updated = await this.api.update(this.hewan.id, {
-          nama: this.nama,
+        const updated = await this.api.update(this.animal.id, {
+          name: this.name,
         });
         this.$emit("update", updated);
       } catch (err) {
-        console.error(err);
+        console.error("Gagal memperbarui animal:", err);
       }
     },
   },
@@ -46,7 +47,7 @@ export default {
 </script>
 
 <style>
-.update-hewan-card {
+.update-animal-card {
   border: 1px solid #ccc;
   padding: 20px;
   border-radius: 8px;
@@ -55,7 +56,7 @@ export default {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-.update-hewan-card h3 {
+.update-animal-card h3 {
   margin-bottom: 15px;
   font-size: 18px;
   color: #333;

@@ -25,7 +25,7 @@ export default {
   css: [],
 
   // Plugin sebelum mounting
-  plugins: [],
+  plugins: ["@/plugins/api.js"],
 
   // Aktifkan auto-import komponen
   components: true,

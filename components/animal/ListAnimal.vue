@@ -1,10 +1,10 @@
 <template>
-  <ul class="list-hewan">
-    <li v-for="hewan in hewanList" :key="hewan.id" class="list-item">
-      <span class="hewan-info">{{ hewan.nama }}</span>
+  <ul class="list-animal">
+    <li v-for="animal in animalList" :key="animal.id" class="list-item">
+      <span class="animal-info">{{ animal.name }}</span>
       <div class="button-group">
-        <button class="edit-btn" @click="$emit('edit', hewan)">Edit</button>
-        <button class="hapus-btn" @click="hapusHewan(hewan)">Hapus</button>
+        <button class="edit-btn" @click="$emit('edit', animal)">Edit</button>
+        <button class="hapus-btn" @click="hapusAnimal(animal)">Delete</button>
       </div>
     </li>
   </ul>
@@ -13,16 +13,16 @@
 <script>
 export default {
   props: {
-    hewanList: Array,
-    api: { type: Function, required: true },
+    animalList: Array,
+    api: { type: Object, required: true },
   },
   methods: {
-    async hapusHewan(hewan) {
+    async hapusAnimal(animal) {
       try {
-        await this.api.delete(hewan.id);
-        this.$emit("hapus", hewan);
+        await this.api.delete(animal.id);
+        this.$emit("hapus", animal);
       } catch (err) {
-        console.error(err);
+        console.error("Gagal menghapus animal:", err);
       }
     },
   },
@@ -30,7 +30,7 @@ export default {
 </script>
 
 <style>
-.list-hewan {
+.list-animal {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -51,7 +51,7 @@ export default {
   background-color: #f0f0f0;
 }
 
-.hewan-info {
+.animal-info {
   font-size: 16px;
   color: #333;
 }
@@ -76,7 +76,7 @@ export default {
 }
 
 .edit-btn:hover {
-  background-color: #2196f3;
+  background-color: #1e88e5;
 }
 
 .hapus-btn {

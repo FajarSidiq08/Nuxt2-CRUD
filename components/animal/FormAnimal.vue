@@ -1,6 +1,6 @@
 <template>
-  <form @submit.prevent="tambahHewan" class="form-hewan">
-    <input v-model="nama" placeholder="Nama Hewan" />
+  <form @submit.prevent="tambahAnimal" class="form-animal">
+    <input v-model="name" placeholder="Nama Animal" />
     <button type="submit">Tambah</button>
   </form>
 </template>
@@ -8,22 +8,22 @@
 <script>
 export default {
   props: {
-    api: { type: Function, required: true }, // inject service hewan
+    api: { type: Object, required: true }, // menerima api inline dari parent
   },
   data() {
-    return { nama: "" };
+    return { name: "" };
   },
   methods: {
-    async tambahHewan() {
-      if (!this.nama) return alert("Nama wajib diisi!");
+    async tambahAnimal() {
+      if (!this.name) return alert("Nama wajib diisi!");
       try {
         const created = await this.api.create({
-          nama: this.nama,
+          name: this.name,
         });
         this.$emit("tambah", created);
-        this.nama = "";
+        this.name = "";
       } catch (err) {
-        console.error(err);
+        console.error("Gagal menambah animal:", err);
       }
     },
   },
@@ -31,15 +31,15 @@ export default {
 </script>
 
 <style>
-.form-hewan {
+.form-animal {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   margin-bottom: 30px;
 }
 
-.form-hewan input,
-.form-hewan select {
+.form-animal input,
+.form-animal select {
   flex: 1 1 200px;
   padding: 10px;
   border: 1px solid #ccc;
@@ -47,13 +47,13 @@ export default {
   font-size: 16px;
 }
 
-.form-hewan input:focus,
-.form-hewan select:focus {
+.form-animal input:focus,
+.form-animal select:focus {
   border-color: #4caf50;
   outline: none;
 }
 
-.form-hewan button {
+.form-animal button {
   padding: 10px 20px;
   background-color: #4caf50;
   color: white;
@@ -64,7 +64,7 @@ export default {
   transition: background-color 0.2s;
 }
 
-.form-hewan button:hover {
-  background-color: #4caf50;
+.form-animal button:hover {
+  background-color: #43a047;
 }
 </style>
