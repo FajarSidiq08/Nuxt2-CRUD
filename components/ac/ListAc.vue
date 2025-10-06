@@ -24,13 +24,12 @@
 export default {
   props: {
     animalCategoryList: { type: Array, required: true },
-    api: { type: Object, required: true },
   },
   methods: {
     async hapusAnimalCategory(item) {
       if (!confirm("Yakin ingin menghapus relasi ini?")) return;
       try {
-        await this.api.delete(item.id);
+        await this.$api.$delete(`/ac/${item.id}`);
         this.$emit("hapus", item);
       } catch (err) {
         console.error("Gagal menghapus relasi animal-category:", err);

@@ -2,18 +2,21 @@
   <div class="animal-page">
     <h1>Daftar Hewan</h1>
 
-    <AnimalFormAnimal :api="animalApi" @tambah="tambahAnimal" />
+    <!-- FORM TAMBAH -->
+    <AnimalFormAnimal :api="$api" @tambah="tambahAnimal" />
 
+    <!-- FORM UPDATE -->
     <AnimalUpdateAnimal
-      :api="animalApi"
+      :api="$api"
       :animal="animalDipilih"
       :visible="showUpdate"
       @update="updateAnimal"
       @batal="showUpdate = false"
     />
 
+    <!-- LIST -->
     <AnimalListAnimal
-      :api="animalApi"
+      :api="$api"
       :animalList="animalList"
       @edit="editAnimal"
       @hapus="hapusAnimal"
@@ -28,58 +31,54 @@ export default {
       animalList: [],
       animalDipilih: null,
       showUpdate: false,
-      animalApi: null,
     };
   },
-  async created() {
-    // definisikan API inline (tanpa services/)
-    this.animalApi = {
-      getAll: async () => {
-        const res = await this.$api.$get("/animal");
-        return res.data;
-      },
-      get: async (id) => {
-        const res = await this.$api.$get(`/animal/${id}`);
-        return res.data;
-      },
-      create: async (data) => {
-        const res = await this.$api.$post("/animal", data);
-        return res.data;
-      },
-      update: async (id, data) => {
-        const res = await this.$api.$put(`/animal/${id}`, data);
-        return res.data;
-      },
-      delete: async (id) => {
-        const res = await this.$api.$delete(`/animal/${id}`);
-        return res.data;
-      },
-    };
 
-    await this.loadAnimal();
+  async created() {
+    await this.loadData();
   },
+
   methods: {
-    async loadAnimal() {
+    async loadData() {
       try {
-        this.animalList = await this.animalApi.getAll();
+        const res = await this.$api.$get("/animal");
+        this.animalList = res.data;
       } catch (err) {
-        console.error(err);
+        console.error("Gagal memuat data hewan:", err);
       }
     },
-    tambahAnimal(animal) {
-      this.animalList.push(animal);
+
+    async tambahAnimal(newAnimal) {
+      try {
+        this.$api.$post("/animal", newAnimal);
+        await this.loadData();
+      } catch (err) {
+        console.error("Gagal menambah hewan:", err);
+      }
     },
+
     editAnimal(animal) {
       this.animalDipilih = animal;
       this.showUpdate = true;
     },
-    updateAnimal(updated) {
-      const index = this.animalList.findIndex((a) => a.id === updated.id);
-      if (index !== -1) this.animalList.splice(index, 1, updated);
-      this.showUpdate = false;
+
+    async updateAnimal(updated) {
+      try {
+        this.$api.$put(`/animal/${updated.id}`, updated);
+        this.showUpdate = false;
+        await this.loadData();
+      } catch (err) {
+        console.error("Gagal mengupdate hewan:", err);
+      }
     },
-    hapusAnimal(animal) {
-      this.animalList = this.animalList.filter((a) => a.id !== animal.id);
+
+    async hapusAnimal(animal) {
+      try {
+        this.$api.$delete(`/animal/${animal.id}`);
+        this.animalList = this.animalList.filter((a) => a.id !== animal.id);
+      } catch (err) {
+        console.error("Gagal menghapus hewan:", err);
+      }
     },
   },
 };

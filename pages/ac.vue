@@ -4,7 +4,6 @@
 
     <!-- FORM TAMBAH -->
     <AcFormAc
-      :api="animalCategoryApi"
       :animals="animalList"
       :categories="categoryList"
       @tambah="tambahAnimalCategory"
@@ -12,7 +11,6 @@
 
     <!-- FORM UPDATE -->
     <AcUpdateAc
-      :api="animalCategoryApi"
       :animalCategory="animalCategoryDipilih"
       :visible="showUpdate"
       :animals="animalList"
@@ -23,7 +21,6 @@
 
     <!-- LIST -->
     <AcListAc
-      :api="animalCategoryApi"
       :animalCategoryList="animalCategoryList"
       @edit="editAnimalCategory"
       @hapus="hapusAnimalCategory"
@@ -40,56 +37,39 @@ export default {
       animalCategoryList: [],
       animalCategoryDipilih: null,
       showUpdate: false,
-
-      animalCategoryApi: null,
     };
   },
 
   async created() {
-    // definisikan API inline
-    this.animalCategoryApi = {
-      getAll: async () => {
-        const res = await this.$api.$get("/ac");
-        return res.data;
-      },
-      create: async (data) => {
-        const res = await this.$api.$post("/ac", data);
-        return res.data;
-      },
-      update: async (id, data) => {
-        const res = await this.$api.$put(`/ac/${id}`, data);
-        return res.data;
-      },
-      delete: async (id) => {
-        const res = await this.$api.$delete(`/ac/${id}`);
-        return res.data;
-      },
-    };
-
     await this.loadData();
   },
 
   methods: {
     async loadData() {
       try {
-        const [animals, categories, relations] = await Promise.all([
+        const [animalsRes, categoriesRes, relationsRes] = await Promise.all([
           this.$api.$get("/animal"),
           this.$api.$get("/category"),
-          this.animalCategoryApi.getAll(),
+          this.$api.$get("/ac"),
         ]);
 
-        this.animalList = animals.data;
-        this.categoryList = categories.data;
-        this.animalCategoryList = relations;
+        this.animalList = animalsRes.data;
+        this.categoryList = categoriesRes.data;
+        this.animalCategoryList = relationsRes.data;
       } catch (err) {
         console.error("Gagal memuat data:", err);
       }
     },
 
     async tambahAnimalCategory(newRelasi) {
-      this.animalCategoryApi.create(newRelasi);
-      await this.loadData();
+      try {
+        this.$api.$post("/ac", newRelasi);
+        await this.loadData();
+      } catch (err) {
+        console.error("Gagal menambah relasi:", err);
+      }
     },
+
     editAnimalCategory(relasi) {
       this.animalCategoryDipilih = relasi;
       this.showUpdate = true;
@@ -97,7 +77,7 @@ export default {
 
     async updateAnimalCategory(updated) {
       try {
-        await this.animalCategoryApi.update(updated.id, updated);
+        this.$api.$put(`/ac/${updated.id}`, updated);
         this.showUpdate = false;
         await this.loadData();
       } catch (err) {
@@ -105,10 +85,15 @@ export default {
       }
     },
 
-    hapusAnimalCategory(relasi) {
-      this.animalCategoryList = this.animalCategoryList.filter(
-        (r) => r.id !== relasi.id
-      );
+    async hapusAnimalCategory(relasi) {
+      try {
+        this.$api.$delete(`/ac/${relasi.id}`);
+        this.animalCategoryList = this.animalCategoryList.filter(
+          (r) => r.id !== relasi.id
+        );
+      } catch (err) {
+        console.error("Gagal menghapus relasi:", err);
+      }
     },
   },
 };

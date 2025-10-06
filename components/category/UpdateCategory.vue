@@ -34,7 +34,7 @@ export default {
     async updateCategory() {
       if (!this.category_name) return alert("Nama kategori wajib diisi!");
       try {
-        const updated = await this.api.update(this.category.id, {
+        const updated = await this.api.$put(`/category/${this.category.id}`, {
           category_name: this.category_name,
         });
         this.$emit("update", updated);

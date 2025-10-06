@@ -7,9 +7,6 @@
 
 <script>
 export default {
-  props: {
-    api: { type: Object, required: true }, // menerima api inline dari parent
-  },
   data() {
     return { name: "" };
   },
@@ -17,10 +14,8 @@ export default {
     async tambahAnimal() {
       if (!this.name) return alert("Nama wajib diisi!");
       try {
-        const created = await this.api.create({
-          name: this.name,
-        });
-        this.$emit("tambah", created);
+        const res = await this.$api.$post("/animal", { name: this.name });
+        this.$emit("tambah", res.data);
         this.name = "";
       } catch (err) {
         console.error("Gagal menambah animal:", err);

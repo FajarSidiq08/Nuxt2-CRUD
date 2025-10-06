@@ -14,12 +14,11 @@
 export default {
   props: {
     animalList: Array,
-    api: { type: Object, required: true },
   },
   methods: {
     async hapusAnimal(animal) {
       try {
-        await this.api.delete(animal.id);
+        await this.$api.$delete(`/animal/${animal.id}`);
         this.$emit("hapus", animal);
       } catch (err) {
         console.error("Gagal menghapus animal:", err);

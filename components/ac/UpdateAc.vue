@@ -36,7 +36,6 @@ export default {
   props: {
     animalCategory: Object,
     visible: Boolean,
-    api: { type: Object, required: true },
     animals: { type: Array, required: true },
     categories: { type: Array, required: true },
   },
@@ -58,11 +57,11 @@ export default {
         return alert("Animal dan Category wajib dipilih!");
 
       try {
-        const updated = await this.api.update(this.animalCategory.id, {
+        const res = await this.$api.$put(`/ac/${this.animalCategory.id}`, {
           animal_id: this.animal_id,
           category_id: this.category_id,
         });
-        this.$emit("update", updated);
+        this.$emit("update", res.data);
       } catch (err) {
         console.error("Gagal memperbarui relasi animal-category:", err);
         alert("Gagal memperbarui relasi!");

@@ -8,7 +8,7 @@
 <script>
 export default {
   props: {
-    api: { type: Object, required: true }, // menerima api inline dari parent
+    api: { type: Object, required: true }, // menerima $api dari parent
   },
   data() {
     return { category_name: "" };
@@ -17,7 +17,7 @@ export default {
     async tambahCategory() {
       if (!this.category_name) return alert("Nama kategori wajib diisi!");
       try {
-        const created = await this.api.create({
+        const created = await this.api.$post("/category", {
           category_name: this.category_name,
         });
         this.$emit("tambah", created);

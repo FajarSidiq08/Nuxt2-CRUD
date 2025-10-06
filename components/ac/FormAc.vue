@@ -25,9 +25,8 @@
 <script>
 export default {
   props: {
-    api: { type: Object, required: true }, // API inline
-    animals: { type: Array, required: true }, // daftar animal dari parent
-    categories: { type: Array, required: true }, // daftar category dari parent
+    animals: { type: Array, required: true },
+    categories: { type: Array, required: true },
   },
   data() {
     return {
@@ -41,11 +40,11 @@ export default {
         return alert("Animal dan Category wajib dipilih!");
 
       try {
-        const created = await this.api.create({
+        const res = await this.$api.$post("/ac", {
           animal_id: this.animal_id,
           category_id: this.category_id,
         });
-        this.$emit("tambah", created);
+        this.$emit("tambah", res.data);
         this.animal_id = "";
         this.category_id = "";
       } catch (err) {

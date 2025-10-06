@@ -18,12 +18,9 @@ export default {
   props: {
     animal: Object,
     visible: Boolean,
-    api: { type: Object, required: true },
   },
   data() {
-    return {
-      name: this.animal?.name || "",
-    };
+    return { name: this.animal?.name || "" };
   },
   watch: {
     animal(newVal) {
@@ -34,10 +31,10 @@ export default {
     async updateAnimal() {
       if (!this.name) return alert("Nama wajib diisi!");
       try {
-        const updated = await this.api.update(this.animal.id, {
+        const res = await this.$api.$put(`/animal/${this.animal.id}`, {
           name: this.name,
         });
-        this.$emit("update", updated);
+        this.$emit("update", res.data);
       } catch (err) {
         console.error("Gagal memperbarui animal:", err);
       }

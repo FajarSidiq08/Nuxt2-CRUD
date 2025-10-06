@@ -21,7 +21,7 @@ export default {
   methods: {
     async hapusCategory(category) {
       try {
-        await this.api.delete(category.id);
+        await this.api.$delete(`/category/${category.id}`);
         this.$emit("hapus", category);
       } catch (err) {
         console.error("Gagal menghapus kategori:", err);

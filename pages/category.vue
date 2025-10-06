@@ -1,16 +1,22 @@
 <template>
   <div class="category-page">
     <h1>Daftar Kategori</h1>
-    <CategoryFormCategory :api="categoryApi" @tambah="tambahCategory" />
+
+    <!-- FORM TAMBAH -->
+    <CategoryFormCategory :api="$api" @tambah="tambahCategory" />
+
+    <!-- FORM UPDATE -->
     <CategoryUpdateCategory
-      :api="categoryApi"
+      :api="$api"
       :category="categoryDipilih"
       :visible="showUpdate"
       @update="updateCategory"
       @batal="showUpdate = false"
     />
+
+    <!-- LIST -->
     <CategoryListCategory
-      :api="categoryApi"
+      :api="$api"
       :categoryList="categoryList"
       @edit="editCategory"
       @hapus="hapusCategory"
@@ -25,49 +31,30 @@ export default {
       categoryList: [],
       categoryDipilih: null,
       showUpdate: false,
-      categoryApi: null,
     };
   },
 
   async created() {
-    // API inline — tidak pakai services/
-    this.categoryApi = {
-      getAll: async () => {
-        const res = await this.$api.$get("/category");
-        return res.data;
-      },
-      get: async (id) => {
-        const res = await this.$api.$get(`/category/${id}`);
-        return res.data;
-      },
-      create: async (data) => {
-        const res = await this.$api.$post("/category", data);
-        return res.data;
-      },
-      update: async (id, data) => {
-        const res = await this.$api.$put(`/category/${id}`, data);
-        return res.data;
-      },
-      delete: async (id) => {
-        const res = await this.$api.$delete(`/category/${id}`);
-        return res.data;
-      },
-    };
-
     await this.loadCategory();
   },
 
   methods: {
     async loadCategory() {
       try {
-        this.categoryList = await this.categoryApi.getAll();
+        const res = await this.$api.$get("/category");
+        this.categoryList = res.data;
       } catch (err) {
         console.error("Gagal memuat kategori:", err);
       }
     },
 
-    tambahCategory(category) {
-      this.categoryList.push(category);
+    async tambahCategory(newCategory) {
+      try {
+        this.$api.$post("/category", newCategory);
+        await this.loadCategory();
+      } catch (err) {
+        console.error("Gagal menambah kategori:", err);
+      }
     },
 
     editCategory(category) {
@@ -75,14 +62,25 @@ export default {
       this.showUpdate = true;
     },
 
-    updateCategory(updated) {
-      const index = this.categoryList.findIndex((c) => c.id === updated.id);
-      if (index !== -1) this.categoryList.splice(index, 1, updated);
-      this.showUpdate = false;
+    async updateCategory(updated) {
+      try {
+        this.$api.$put(`/category/${updated.id}`, updated);
+        this.showUpdate = false;
+        await this.loadCategory();
+      } catch (err) {
+        console.error("Gagal mengupdate kategori:", err);
+      }
     },
 
-    hapusCategory(category) {
-      this.categoryList = this.categoryList.filter((c) => c.id !== category.id);
+    async hapusCategory(category) {
+      try {
+        this.$api.$delete(`/category/${category.id}`);
+        this.categoryList = this.categoryList.filter(
+          (c) => c.id !== category.id
+        );
+      } catch (err) {
+        console.error("Gagal menghapus kategori:", err);
+      }
     },
   },
 };
