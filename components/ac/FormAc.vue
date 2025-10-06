@@ -1,13 +1,13 @@
 <template>
   <form @submit.prevent="tambahAnimalCategory" class="form-animal-category">
-    <select v-model="id_animal">
+    <select v-model="animal_id">
       <option disabled value="">Pilih Animal</option>
       <option v-for="animal in animals" :key="animal.id" :value="animal.id">
         {{ animal.name }}
       </option>
     </select>
 
-    <select v-model="id_category">
+    <select v-model="category_id">
       <option disabled value="">Pilih Category</option>
       <option
         v-for="category in categories"
@@ -31,23 +31,23 @@ export default {
   },
   data() {
     return {
-      id_animal: "",
-      id_category: "",
+      animal_id: "",
+      category_id: "",
     };
   },
   methods: {
     async tambahAnimalCategory() {
-      if (!this.id_animal || !this.id_category)
+      if (!this.animal_id || !this.category_id)
         return alert("Animal dan Category wajib dipilih!");
 
       try {
         const created = await this.api.create({
-          id_animal: this.id_animal,
-          id_category: this.id_category,
+          animal_id: this.animal_id,
+          category_id: this.category_id,
         });
         this.$emit("tambah", created);
-        this.id_animal = "";
-        this.id_category = "";
+        this.animal_id = "";
+        this.category_id = "";
       } catch (err) {
         console.error("Gagal menambah relasi animal-category:", err);
         alert("Gagal menambah relasi!");

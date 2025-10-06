@@ -3,14 +3,14 @@
     <h3>Update Relasi Animal & Category</h3>
 
     <form @submit.prevent="updateAnimalCategory" class="form-update">
-      <select v-model="id_animal">
+      <select v-model="animal_id">
         <option disabled value="">Pilih Animal</option>
         <option v-for="animal in animals" :key="animal.id" :value="animal.id">
           {{ animal.name }}
         </option>
       </select>
 
-      <select v-model="id_category">
+      <select v-model="category_id">
         <option disabled value="">Pilih Category</option>
         <option
           v-for="category in categories"
@@ -42,25 +42,25 @@ export default {
   },
   data() {
     return {
-      id_animal: this.animalCategory?.id_animal || "",
-      id_category: this.animalCategory?.id_category || "",
+      animal_id: this.animalCategory?.animal_id || "",
+      category_id: this.animalCategory?.category_id || "",
     };
   },
   watch: {
     animalCategory(newVal) {
-      this.id_animal = newVal?.id_animal || "";
-      this.id_category = newVal?.id_category || "";
+      this.animal_id = newVal?.animal_id || "";
+      this.category_id = newVal?.category_id || "";
     },
   },
   methods: {
     async updateAnimalCategory() {
-      if (!this.id_animal || !this.id_category)
+      if (!this.animal_id || !this.category_id)
         return alert("Animal dan Category wajib dipilih!");
 
       try {
         const updated = await this.api.update(this.animalCategory.id, {
-          id_animal: this.id_animal,
-          id_category: this.id_category,
+          animal_id: this.animal_id,
+          category_id: this.category_id,
         });
         this.$emit("update", updated);
       } catch (err) {
