@@ -34,10 +34,6 @@ export default {
     };
   },
 
-  async created() {
-    await this.loadCategory();
-  },
-
   methods: {
     async loadCategory() {
       try {
@@ -82,6 +78,10 @@ export default {
         console.error("Gagal menghapus kategori:", err);
       }
     },
+  },
+
+  mounted() {
+    this.loadData();
   },
 };
 </script>

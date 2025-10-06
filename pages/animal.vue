@@ -34,10 +34,6 @@ export default {
     };
   },
 
-  async created() {
-    await this.loadData();
-  },
-
   methods: {
     async loadData() {
       try {
@@ -80,6 +76,10 @@ export default {
         console.error("Gagal menghapus hewan:", err);
       }
     },
+  },
+
+  mounted() {
+    this.loadData();
   },
 };
 </script>

@@ -40,10 +40,6 @@ export default {
     };
   },
 
-  async created() {
-    await this.loadData();
-  },
-
   methods: {
     async loadData() {
       try {
@@ -95,6 +91,10 @@ export default {
         console.error("Gagal menghapus relasi:", err);
       }
     },
+  },
+
+  mounted() {
+    this.loadData();
   },
 };
 </script>
