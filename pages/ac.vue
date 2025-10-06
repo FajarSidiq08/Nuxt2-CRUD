@@ -96,12 +96,13 @@ export default {
     },
 
     async updateAnimalCategory(updated) {
-      const index = this.animalCategoryList.findIndex(
-        (r) => r.id === updated.id
-      );
-      if (index !== -1) this.animalCategoryList.splice(index, 1, updated);
-      this.showUpdate = false;
-      await this.loadData();
+      try {
+        await this.animalCategoryApi.update(updated.id, updated);
+        this.showUpdate = false;
+        await this.loadData();
+      } catch (err) {
+        console.error("Gagal mengupdate relasi:", err);
+      }
     },
 
     hapusAnimalCategory(relasi) {
