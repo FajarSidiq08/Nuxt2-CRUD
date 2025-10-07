@@ -35,10 +35,9 @@ export default {
   },
 
   methods: {
-    async loadCategory() {
+    async LoadData() {
       try {
-        const res = await this.$api.$get("/category");
-        this.categoryList = res.data;
+        this.categoryList = (await this.$api.$get("/category")).data;
       } catch (err) {
         console.error("Gagal memuat kategori:", err);
       }
@@ -47,7 +46,7 @@ export default {
     async tambahCategory(newCategory) {
       try {
         this.$api.$post("/category", newCategory);
-        await this.loadCategory();
+        await this.LoadData();
       } catch (err) {
         console.error("Gagal menambah kategori:", err);
       }
@@ -62,7 +61,7 @@ export default {
       try {
         this.$api.$put(`/category/${updated.id}`, updated);
         this.showUpdate = false;
-        await this.loadCategory();
+        await this.LoadData();
       } catch (err) {
         console.error("Gagal mengupdate kategori:", err);
       }
@@ -81,7 +80,7 @@ export default {
   },
 
   mounted() {
-    this.loadData();
+    this.LoadData();
   },
 };
 </script>

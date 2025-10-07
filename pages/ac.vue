@@ -43,15 +43,9 @@ export default {
   methods: {
     async loadData() {
       try {
-        const [animalsRes, categoriesRes, relationsRes] = await Promise.all([
-          this.$api.$get("/animal"),
-          this.$api.$get("/category"),
-          this.$api.$get("/ac"),
-        ]);
-
-        this.animalList = animalsRes.data;
-        this.categoryList = categoriesRes.data;
-        this.animalCategoryList = relationsRes.data;
+        this.animalList = (await this.$api.$get("/animal")).data;
+        this.categoryList = (await this.$api.$get("/category")).data;
+        this.animalCategoryList = (await this.$api.$get("/ac")).data;
       } catch (err) {
         console.error("Gagal memuat data:", err);
       }

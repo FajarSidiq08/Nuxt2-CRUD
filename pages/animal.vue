@@ -37,8 +37,7 @@ export default {
   methods: {
     async loadData() {
       try {
-        const res = await this.$api.$get("/animal");
-        this.animalList = res.data;
+        this.animalList = (await this.$api.$get("/animal")).data;
       } catch (err) {
         console.error("Gagal memuat data hewan:", err);
       }

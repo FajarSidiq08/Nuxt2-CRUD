@@ -18,7 +18,7 @@
       </option>
     </select>
 
-    <button type="submit">Tambah Relasi</button>
+    <button type="submit">Tambah Data</button>
   </form>
 </template>
 
