@@ -15,7 +15,13 @@ export default {
         content: process.env.npm_package_description || "",
       },
     ],
-    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
+    link: [
+      { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
+      { rel: "stylesheet", href: "/assets/css/bootstrap.min.css" },
+    ],
+    script: [
+      { src: "/assets/js/bootstrap.bundle.min.js", body: true },
+    ],
   },
 
   // Warna loading bar
