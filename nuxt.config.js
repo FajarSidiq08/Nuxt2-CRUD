@@ -18,18 +18,21 @@ export default {
     link: [
       { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
       { rel: "stylesheet", href: "/assets/css/bootstrap.min.css" },
+      {
+        rel: "stylesheet",
+        href: "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css",
+      },
     ],
-    script: [
-      { src: "/assets/js/bootstrap.bundle.min.js", body: true },
-    ],
+    script: [{ src: "/assets/js/bootstrap.bundle.min.js", body: true }],
   },
 
   // Warna loading bar
   loading: { color: "#fff" },
 
   // CSS global
-  css: [],
-
+  css: [
+    "~/assets/css/main.css", 
+  ],
   // Plugin sebelum mounting
   plugins: ["@/plugins/api.js"],
 
