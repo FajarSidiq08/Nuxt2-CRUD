@@ -41,16 +41,17 @@ export default {
   },
   data() {
     return {
-      animal_id: this.animalCategory?.animal_id || "",
-      category_id: this.animalCategory?.category_id || "",
+      animal_id: this.animalCategory?.animal?.id || "",
+      category_id: this.animalCategory?.category?.id || "",
     };
   },
   watch: {
     animalCategory(newVal) {
-      this.animal_id = newVal?.animal_id || "";
-      this.category_id = newVal?.category_id || "";
+      this.animal_id = newVal?.animal?.id || "";
+      this.category_id = newVal?.category?.id || "";
     },
   },
+
   methods: {
     async updateAnimalCategory() {
       if (!this.animal_id || !this.category_id)
